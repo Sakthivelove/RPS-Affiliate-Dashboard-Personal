@@ -17,13 +17,13 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/login-old" element={<AffiliateLogin />} />
+          <Route path="/login" element={<AffiliateLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/create-affiliate-tournament" element={<CreateAffiliateTournament />} />
           <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
           <Route path="/create-new-affiliate-tournament" element={<CreateNewAffiliateTournament />} />
           <Route path="/login-container" element={<LoginContainer />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login-new" element={<Login />} />
           <Route path="/tournament-history" element={<TournamentPage />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
