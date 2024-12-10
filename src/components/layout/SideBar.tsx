@@ -203,6 +203,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         } bg-[#0E1B22] opacity-90 flex-shrink-0`}
     >
       <div className="absolute top-0 w-full h-full px-[0.5rem] xl:px-[1rem] py-[0.857rem] flex flex-col">
+        {/* Logo at the top of the sidebar */}
+        <div className="flex justify-center mb-4">
+          <img
+            src="/RockMainLogo.png" // Add the logo image path here
+            alt="Logo"
+            className={`transition-all duration-300 ${sidebarActive ? "h-12 w-auto" : "h-8 w-auto mx-auto"} cursor-pointer`} // Adjust size and positioning based on sidebar state
+            onClick={() => navigate('/tournament-list')} // Navigate to dashboard without page refresh
+          />
+        </div>
+
         {/* <div className="flex w-full justify-center">
           {profileCard(sidebarActive, username)}
         </div> */}
@@ -243,6 +253,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <SidebarMenuList sidebarActive={sidebarActive} menuItems={menuItem} breakIntervals={breakIntervals} onLogoutClick={onLogoutClick} />
         </div>
 
+
       </div>
 
       {/* Button to toggle sidebar */}
@@ -255,6 +266,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     </div>
   );
 };
+
 
 
 export default Sidebar;

@@ -209,6 +209,21 @@ input:checked + .slider:before {
   transform: translateX(14px);
 }
 
+/* Styling for the calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.6) sepia(1) saturate(4) hue-rotate(200deg); /* Customize color */
+  background-color: transparent;
+  border: none;
+}
+
+/* Example of customizing the focus state */
+input[type="datetime-local"]:focus,
+input[type="date"]:focus {
+  border-color: #45F882; /* Customize focus border */
+  outline: none;
+}
+
 
 
 

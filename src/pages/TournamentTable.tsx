@@ -44,25 +44,26 @@ const TournamentTable: React.FC = () => {
         'Payment End',
     ];
 
-    // Map data to include all fields in the table
-    const tableData = data?.map((tournament) => ({
-        'Tournament ID': tournament.tournamentId,
-        'Banner Image': tournament.bannerImage,
-        'Tournament Name': tournament.tournamentName,
-        'Primary Tournament ID': tournament.primaryTournamentId,
-        'Date & Time': tournament.dateTime,
-        'Type': tournament.type,
-        'Entry Fee': tournament.entryFee,
+    // Map data to include all fields in the table with fallbacks
+    const tableData = data?.map((tournament, index) => ({
+        'Tournament ID': tournament.tournamentId || 'N/A',
+        'Banner Image': tournament.bannerImage || 'N/A',
+        'Tournament Name': tournament.tournamentName || 'Unknown',
+        'Primary Tournament ID': tournament.primaryTournamentId || 'N/A',
+        // Assuming 'dateTime' is a string representing a Unix timestamp in seconds
+        'Date & Time': tournament.dateTime ? new Date(Number(tournament.dateTime) * 1000).toLocaleString() : 'N/A',
+        'Type': tournament.type || 'N/A',
+        'Entry Fee': tournament.entryFee || 'N/A',
         'Nominal Tournament': tournament.nominalTournament ? 'Yes' : 'No',
-        'Nominal Fee': tournament.nominalFee,
+        'Nominal Fee': tournament.nominalFee || 'N/A',
         'Prize Pool': tournament.totalPrizePool ?? 'N/A',
-        'Winner': truncateAddress(tournament.winner, 6),
-        'Current Stage': tournament.currentStage,
-        'Status': tournament.status,
+        'Winner': tournament.winner ? truncateAddress(tournament.winner, 6) : 'N/A',
+        'Current Stage': tournament.currentStage || 'N/A',
+        'Status': tournament.status || 'N/A',
         'Payment Window': tournament.paymentWindow ? 'Open' : 'Closed',
-        'No. of Players': tournament.noOfPlayersRegistered,
-        'Payment Start': new Date(tournament.paymentWindowStart).toLocaleString(),
-        'Payment End': new Date(tournament.paymentWindowEnd).toLocaleString(),
+        'No. of Players': tournament.noOfPlayersRegistered || '0',
+        'Payment Start': tournament.paymentWindowStart ? new Date(tournament.paymentWindowStart).toLocaleString() : 'N/A',
+        'Payment End': tournament.paymentWindowEnd ? new Date(tournament.paymentWindowEnd).toLocaleString() : 'N/A',
     }));
 
     // Filter tournaments based on search query
