@@ -5,11 +5,10 @@ import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; // Icons for passwor
 import logo from "/RockMainLogo.png";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../api/api";
-import StatusMessage from "../../components/StatusMessage"; // Import the StatusMessage component
 
 // Updated mutation function
 const resetPassword = async (password: string) => {
-  const response = await api.post("/api/reset-password", { password });
+  const response = await api.post("/auth/resetpassword", { password });
   return response.data;
 };
 
@@ -23,18 +22,20 @@ const ResetPassword = () => {
   const navigate = useNavigate(); // Hook to navigate to different pages
 
   // Use React Query Mutation to handle the API call
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: resetPassword, // The mutation function
+  const { mutateAsync,isPending } = useMutation({
+    mutationFn: resetPassword,
     onSuccess: () => {
       setSuccess("Your password has been successfully reset.");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
     },
-    onError: (error: any) => {
-      setError("Failed to reset the password. Please try again.");
+    onError: (err: any) => {
+      // Handle API errors directly in the onError callback
+      const errorMessage = err.response?.data?.message || "Failed to reset the password. Please try again.";
+      setError(errorMessage);
+      setTimeout(() => setError(""), 3000); // Clear error after 3 seconds
     },
   });
+  
 
   // Toggle password visibility
   const togglePassword = () => setShowPassword(!showPassword);
@@ -45,42 +46,35 @@ const ResetPassword = () => {
   // Handle form submission to reset the password
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Basic validation
     if (!password || !confirmPassword) {
       setError("Both fields are required.");
+      setTimeout(() => setError(""), 3000); // Clear error after 3 seconds
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      setTimeout(() => setError(""), 3000); // Clear error after 3 seconds
       return;
     }
-
+  
     setError(""); // Reset error state
     setSuccess(""); // Reset success message
-
+  
     try {
       // Trigger password reset API call via React Query
-      await mutateAsync(password); // Pass the password to mutateAsync
-    } catch (err) {
-      setError("An error occurred. Please try again.");
+      await mutateAsync(password);
+    } catch (err: any) {
+      // Extract error message from the caught error
+      const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
+      setError(errorMessage);
+      setTimeout(() => setError(""), 3000); // Clear error after 3 seconds
     }
   };
-
-  if (error || isPending) {
-    return (
-
-      /* Integrating StatusMessage for loading and error handling */
-      <StatusMessage
-        isLoading={isPending}
-        error={error ? { message: error } : null}
-        loadingMessage="Resetting your password..."
-        errorMessage={error || 'Failed to reset password'}
-        className="h-screen"
-      />
-    )
-  }
+  
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
@@ -88,15 +82,28 @@ const ResetPassword = () => {
         {/* Logo */}
         <img src={logo} alt="Rock Main Logo" className="mx-auto mb-4 h-24 w-auto" />
 
-        <h1 className="text-4xl font-bold text-center text-white mb-8" style={{ color: "rgba(69, 248, 130, 1)" }}>
+        <h1
+          className="text-4xl font-bold text-center text-white mb-8"
+          style={{ color: "rgba(69, 248, 130, 1)" }}
+        >
           Reset Password
         </h1>
+
+        {/* Error message */}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
 
         {/* Success message */}
         {success && <div className="text-green-500 mb-4">{success}</div>}
 
-        <form onSubmit={handleSubmit} className="relative z-10 p-[0.07rem] rounded-lg w-[50%]" style={{ background: "linear-gradient(90deg, #45F882 0%, #FFBE18 100%)" }}>
-          <div className="p-8 rounded-lg bg-opacity-90" style={{ backgroundColor: "rgba(26, 29, 38, 1)" }}>
+        <form
+          onSubmit={handleSubmit}
+          className="relative z-10 p-[0.07rem] rounded-lg w-[50%]"
+          style={{ background: "linear-gradient(90deg, #45F882 0%, #FFBE18 100%)" }}
+        >
+          <div
+            className="p-8 rounded-lg bg-opacity-90"
+            style={{ backgroundColor: "rgba(26, 29, 38, 1)" }}
+          >
             <div className="flex flex-col gap-3">
               {/* Password Input with eye icon */}
               <div className="relative">

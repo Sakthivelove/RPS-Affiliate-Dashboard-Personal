@@ -5,7 +5,6 @@ import Button from '../../components/common/AdminButton';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/api';
 import logo from "/RockMainLogo.png";
-import StatusMessage from '../../components/StatusMessage';  // Import StatusMessage component
 
 // Define the shape of the 2FA data and response types
 interface Verify2FADto {
@@ -32,18 +31,20 @@ const Verify2FA: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('authToken');  // Get the token from localStorage
+  const token = localStorage.getItem('authToken'); // Get the token from localStorage
 
   const mutation = useMutation<Verify2FAResponse, Error, Verify2FADto>({
     mutationFn: verify2FA,
     onSuccess: (data) => {
       if (data.success) {
-        // On successful 2FA verification, navigate to the dashboard or home page
-        navigate('/dashboard');
+        setErrorMessage(null); // Clear the error message
+        navigate('/dashboard'); // Navigate on success
       }
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message);  // Display error message
+      setErrorMessage(error.message); // Set error message
+      // Automatically clear the error message after 3 seconds
+      setTimeout(() => setErrorMessage(null), 3000);
     },
   });
 
@@ -52,29 +53,22 @@ const Verify2FA: React.FC = () => {
 
     if (!OTP || isNaN(Number(OTP))) {
       setErrorMessage('Please enter a valid OTP.');
+      // Automatically clear the error message after 3 seconds
+      setTimeout(() => setErrorMessage(null), 3000);
       return;
     }
 
     mutation.mutate({ token: token || '', OTP: Number(OTP) });
   };
 
-  if (mutation.error || mutation.isPending) {
-    return (
-      /* Integrating StatusMessage for loading and error handling */
-      <StatusMessage
-        isLoading={mutation.status === 'pending'}
-        error={errorMessage ? { message: errorMessage } : null}
-        loadingMessage="Verifying OTP..."
-        errorMessage={errorMessage || 'Failed to verify OTP'}
-        className='h-screen'
-      />
-    )
-  }
+  const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOTP(e.target.value);
+    setErrorMessage(null); // Clear the error message when the user starts typing
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
       <div className="bg-opacity-90 rounded-lg shadow-lg overflow-hidden relative w-full flex flex-col justify-center items-center">
-
         {/* Logo */}
         <img src={logo} alt="Rock Main Logo" className="mx-auto mb-4 h-24 w-auto" />
 
@@ -83,11 +77,12 @@ const Verify2FA: React.FC = () => {
           2FA Verification
         </h1>
 
-        <div
-          className="p-[0.07rem] rounded-lg md:w-[50%]"
-          style={{ background: 'linear-gradient(90deg, #45F882 0%, #FFBE18 100%)' }}
-        >
-          <form className="p-8 rounded-lg" style={{ backgroundColor: 'rgba(26, 29, 38, 1)' }} onSubmit={handleVerifySubmit}>
+        <div className="p-[0.07rem] rounded-lg md:w-[50%]" style={{ background: 'linear-gradient(90deg, #45F882 0%, #FFBE18 100%)' }}>
+          <form
+            className="p-8 rounded-lg"
+            style={{ backgroundColor: 'rgba(26, 29, 38, 1)' }}
+            onSubmit={handleVerifySubmit}
+          >
             <div className="flex flex-col gap-3">
               {/* OTP input */}
               <div className="relative">
@@ -99,7 +94,7 @@ const Verify2FA: React.FC = () => {
                   type="text"
                   placeholder="Enter OTP"
                   value={OTP}
-                  onChange={(e) => setOTP(e.target.value)}
+                  onChange={handleOTPChange}
                   className="p-2 pl-10 pr-3 rounded-md focus:outline-none focus:ring focus:ring-green-100 w-full"
                   style={{
                     backgroundColor: 'rgba(14, 27, 34, 1)',
@@ -109,6 +104,16 @@ const Verify2FA: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Error Message */}
+            {errorMessage && (
+              <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+            )}
+
+            {/* Loading State
+            {mutation.isPending && (
+              <p className="text-yellow-500 text-center mt-4">Verifying OTP...</p>
+            )} */}
 
             {/* Verify Button */}
             <div className="flex justify-center mt-6">

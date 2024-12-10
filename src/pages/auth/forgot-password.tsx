@@ -5,7 +5,6 @@ import Button from "../../components/common/AdminButton";
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { api } from "../../api/api";
-import StatusMessage from "../../components/StatusMessage"; // Import StatusMessage component
 
 const ForgotPassword = () => {
   const [telegramId, setTelegramId] = useState(""); // State for Telegram ID
@@ -23,18 +22,26 @@ const ForgotPassword = () => {
     onSuccess: (data) => {
       setSuccess("Password reset instructions have been sent to your Telegram.");
       setTelegramId(""); // Clear the input after success
+      setTimeout(() => setSuccess(""), 5000); // Clear success message after 5 seconds
       setTimeout(() => {
         navigate("/login"); // Redirect to login page after a delay
       }, 3000);
     },
+
     onError: (err) => {
       setError("Failed to send password reset instructions. Please try again later.");
+      // Automatically clear the error after 5 seconds
+      setTimeout(() => setError(""), 5000);
     },
+
   });
 
   // Handle form submission to reset password
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous error
+    setError("");
 
     // Basic validation
     if (!telegramId) {
@@ -45,18 +52,6 @@ const ForgotPassword = () => {
     mutation.mutate(telegramId); // Call the mutation function
   };
 
-  if (mutation.error || mutation.isPending) {
-    return (
-      /* StatusMessage for loading, error or success */
-      <StatusMessage
-        isLoading={mutation.isPending}
-        error={error ? { message: error } : null}
-        loadingMessage="Sending password reset instructions..."
-        errorMessage={error}
-        className="h-screen"
-      />
-    )
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
@@ -75,7 +70,19 @@ const ForgotPassword = () => {
           Forgot Password
         </h1>
 
+        {/* Display success message */}
         {success && <div className="text-green-500 mb-4">{success}</div>}
+
+        {/* Display error message */}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+
+        {/* Loading indicator */}
+        {mutation.isPending && !success && !error && (
+          <div className="mb-4">
+            <div className="text-green-700">Sending password reset instructions...</div>
+          </div>
+        )}
+
 
         {/* Form to reset password */}
         <form
@@ -107,6 +114,7 @@ const ForgotPassword = () => {
                 />
               </div>
 
+              {/* Submit button */}
               <div className="flex justify-center mt-6">
                 <Button
                   image="green"
