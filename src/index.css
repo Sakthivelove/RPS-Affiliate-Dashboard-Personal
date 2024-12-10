@@ -2,3 +2,213 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Apply custom scrollbar globally except for the main page */
+* {
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #45F882 #1a2a33;
+  /* scrollbar-color: initial #1a2a33; Reset the color */
+  /* Thumb and Track color for Firefox */
+}
+
+/* Apply custom styling for webkit browsers (Chrome, Safari, Edge, etc.) */
+*::-webkit-scrollbar {
+  width: 6px;
+  /* Vertical scrollbar width */
+  height: 6px;
+  /* Horizontal scrollbar height */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #45F882;
+  /* Default green thumb */
+  border-radius: 5px;
+  /* Rounded corners */
+  transition: background-color 0.3s ease;
+  /* Smooth transition for hover effect */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #3dc973;
+  /* Darker green on hover */
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #1a2a33;
+  /* Dark background for the track */
+}
+
+/* Exclude custom scrollbar styles from the body or the main content */
+body {
+  scrollbar-width: auto;
+  /* Default scrollbar */
+  scrollbar-color: auto;
+  /* Default scrollbar */
+}
+
+body::-webkit-scrollbar {
+  width: auto;
+  height: auto;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: initial;
+  /* Default color */
+  border-radius: initial;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: initial;
+  /* Default color */
+}
+
+/* Alternatively, you can exclude specific content sections by targeting them directly */
+#main-content {
+  scrollbar-width: auto;
+  /* Reset for specific sections */
+}
+
+#main-content::-webkit-scrollbar {
+  width: auto;
+  height: auto;
+}
+
+#main-content::-webkit-scrollbar-thumb {
+  background-color: initial;
+}
+
+#main-content::-webkit-scrollbar-track {
+  background-color: initial;
+}
+
+
+
+
+/* Hide scrollbar for all major browsers */
+.all {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.all::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, and Opera */
+}
+
+/* Global Styles */
+.modal,
+.modal-overlay {
+  z-index: 9999 !important;
+}
+
+.sidebar-active {
+  width: 77%;
+}
+
+.sidebar-inactive {
+  width: 94%;
+}
+
+/* Default browser scrollbars */
+.default-scrollbar {
+  overflow: auto;
+}
+
+/* Custom scrollbars */
+.custom-scrollbar {
+  overflow: auto;
+}
+
+/* General scrollbar styles for custom scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  /* Vertical scrollbar width */
+  height: 8px;
+  /* Horizontal scrollbar height */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: yellow;
+  /* Track background */
+  border-radius: 18px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  /* Thumb color */
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+  /* Space around thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Thumb hover color */
+}
+
+.no-scrollbar {
+  /* Hides scrollbar for all browsers */
+  overflow: hidden;
+}
+
+.no-scrollbar {
+  /* Hide scrollbar but allow scrolling */
+  overflow: scroll;
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Edge */
+}
+
+/* Tailwind Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+
+
+
