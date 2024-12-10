@@ -206,7 +206,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* <div className="flex w-full justify-center">
           {profileCard(sidebarActive, username)}
         </div> */}
-
+        {/* 
         {sidebarActive ? (
           <div className="w-full my-[1rem]">
             <button
@@ -232,10 +232,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 alt="icon"
                 className="w-5 h-5"
               />
-              <span className="sr-only">{actionText}</span> {/* For accessibility */}
+              <span className="sr-only">{actionText}</span>  For accessibility 
             </button>
           </div>
-        )}
+        )} 
+*/}
 
         {/* Scrollable Menu List */}
         <div className={`overflow-y-auto flex-grow scrollbar-thin ${!sidebarActive ? 'no-scrollbar' : ''}`}>

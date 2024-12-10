@@ -31,7 +31,6 @@ const fetchActivities = async (): Promise<Activity[]> => {
 };
 
 const Activities: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
     const { sidebarActive } = useSidebar();
 
     const { data: activities, error, isLoading } = useQuery<Activity[]>({
@@ -39,20 +38,9 @@ const Activities: React.FC = () => {
         queryFn: fetchActivities,
     });
 
-    const handleSearch = (searchTerm: string) => {
-        setSearchTerm(searchTerm.toLowerCase());
-    };
-
     const columns = ['S.No', 'Telegram ID', 'Action', 'IP Address', 'Status', 'Device Info', 'Reason', 'Created At'];
 
-    const filteredData =
-        activities?.filter((activity) =>
-            Object.values(activity).some((value) =>
-                value?.toString().toLowerCase().includes(searchTerm)
-            )
-        ) || [];
-
-    const data = filteredData.map((activity, index) => ({
+    const data = activities?.map((activity, index) => ({
         'S.No': index + 1,
         'Telegram ID': activity.telegramId,
         Action: activity.action,
@@ -79,16 +67,18 @@ const Activities: React.FC = () => {
 
             {!isLoading && !error && (
                 <div className="m-[2%]">
-                    <h1 className="text-4xl font-bold text-[#45F882] sticky top-0 mb-6">
-                        Dashboard - Activity Log
+                    {/* <h1 className="text-4xl font-bold text-[#45F882] sticky top-0 mb-6">
+                       
                     </h1>
                     <div className="mb-6 sticky top-16">
                         <SearchBar placeholder="Search activities..." onSearch={handleSearch} />
-                    </div>
-                    <div className="relative z-10 overflow-auto h-[75vh]">
+                    </div> */}
+                    <div className="relative z-10 overflow-auto">
                         <Table
                             columns={columns}
                             data={data}
+                            title='Activity Log'
+                            showSearchBar={true}
                             rowColor="bg-[#0F1C23]"
                             tableBgColor="bg-[#1A1D26]"
                             headerTextColor="text-[#45F882]"
@@ -99,6 +89,7 @@ const Activities: React.FC = () => {
                                         : '#4CAF50'
                                     : 'white'
                             }
+                            height='67vh'
                         />
                     </div>
                 </div>
