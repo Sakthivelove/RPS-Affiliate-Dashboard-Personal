@@ -79,6 +79,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     "/forgot-password",
     "/reset-password",
     "/404",
+    "/register",
+    "/register-confirmation",
+    "/register-otp-resend"
   ];
 
   const showSidebar = !routesWithoutSidebar.includes(location.pathname);

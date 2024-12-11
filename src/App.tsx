@@ -15,6 +15,9 @@ import Activities from "./pages/activities/activities";
 import RootRedirect from "./components/RootRedirect";
 import TournamentTable from "./pages/TournamentTable";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Register from "./pages/auth/register";
+import RegisterConfirmation from "./pages/auth/register-confirmation";
+import RegisterOtpResend from "./pages/auth/resend-otp";
 
 
 const App: React.FC = () => {
@@ -35,12 +38,17 @@ const App: React.FC = () => {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
 
+                {/* Registration Routes */}
+                <Route path="/register" element={<Register />} /> {/* Registration page */}
+                <Route path="/register-confirmation" element={<RegisterConfirmation />} /> {/* Registration confirmation page */}
+                <Route path="/register-otp-resend" element={<RegisterOtpResend />} /> {/* OTP resend page */}
+
                 {/* Protected Routes */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
-                  <Route path="/tournament-list" element={<TournamentTable />} />
-                  <Route path="/activities" element={<Activities />} />
-                </Route>
+                {/* <Route element={<ProtectedRoute />}> */}
+                <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
+                <Route path="/tournament-list" element={<TournamentTable />} />
+                <Route path="/activities" element={<Activities />} />
+                {/* </Route> */}
               </Routes>
             </Layout>
           </SidebarProvider>
