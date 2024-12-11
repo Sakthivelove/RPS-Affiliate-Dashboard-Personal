@@ -36,11 +36,11 @@ const App: React.FC = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
 
                 {/* Protected Routes */}
-                {/* <Route element={<ProtectedRoute />}> */}
+                <Route element={<ProtectedRoute />}>
                   <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
                   <Route path="/tournament-list" element={<TournamentTable />} />
                   <Route path="/activities" element={<Activities />} />
-                {/* </Route> */}
+                </Route>
               </Routes>
             </Layout>
           </SidebarProvider>
