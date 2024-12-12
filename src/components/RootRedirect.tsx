@@ -13,7 +13,7 @@ const RootRedirect: React.FC = () => {
 
   if (user) {
     console.log("RootRedirect: User logged in. Redirecting to /affiliate-tournaments.");
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/tournament-list" replace />;
   }
 
   console.warn("RootRedirect: User not logged in. Redirecting to /login.");

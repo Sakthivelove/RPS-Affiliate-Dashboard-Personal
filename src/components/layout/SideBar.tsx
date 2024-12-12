@@ -73,7 +73,7 @@ const SidebarMenuList: React.FC<SidebarMenuListProps> = ({
   };
 
   return (
-    <div className="mt-[0.5rem] overflow-y-auto">
+    <div className="overflow-y-auto">
       <div className={window.innerHeight < 400 ? "h-[10rem]" : "h-full"}>
         <ul>
           {menuItems.map((item, index) => {
@@ -204,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="absolute top-0 w-full h-full px-[0.5rem] xl:px-[1rem] py-[0.857rem] flex flex-col">
         {/* Logo at the top of the sidebar */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-2">
           <img
             src="/RockMainLogo.png" // Add the logo image path here
             alt="Logo"

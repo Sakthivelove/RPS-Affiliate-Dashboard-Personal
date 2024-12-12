@@ -6,22 +6,10 @@ import { getContainerClass, truncateAddress } from '../utils';
 import StatusMessage from '../components/StatusMessage';
 
 const TournamentTable: React.FC = () => {
-    const { data, error, isLoading } = useTournaments();
+    const { data, error, isLoading,isError } = useTournaments();
     const [searchQuery, setSearchQuery] = useState('');
     const { sidebarActive } = useSidebar();
 
-    // If loading or error occurs, render the StatusMessage
-    if (isLoading || error) {
-        return (
-            <StatusMessage
-                isLoading={isLoading}
-                error={error}
-                loadingMessage="Loading tournament data..."
-                errorMessage={error?.message || 'Unable to fetch tournament data.'}
-                className={`absolute right-0 ${sidebarActive ? "w-[77%]" : "w-[94%]"} flex justify-center items-center h-full`}
-            />
-        );
-    }
 
     // Define columns with all fields from the Tournament interface
     const columns = [
@@ -90,6 +78,10 @@ const TournamentTable: React.FC = () => {
                     headerTextColor="text-[#45F882]"
                     showSearchBar={true}
                     onSearch={handleSearch}
+                    isLoading={isLoading}
+                    error={isError}
+                    loadingMessage="Loading tournament data..."
+                    errorMessage={error?.message}
                 />
             </div>
         </div>
