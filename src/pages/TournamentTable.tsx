@@ -6,7 +6,7 @@ import { getContainerClass, truncateAddress } from '../utils';
 import StatusMessage from '../components/StatusMessage';
 
 const TournamentTable: React.FC = () => {
-    const { data, error, isLoading,isError } = useTournaments();
+    const { data, error, isLoading, isError } = useTournaments();
     const [searchQuery, setSearchQuery] = useState('');
     const { sidebarActive } = useSidebar();
 
@@ -39,7 +39,9 @@ const TournamentTable: React.FC = () => {
         'Tournament Name': tournament.tournamentName || 'Unknown',
         'Primary Tournament ID': tournament.primaryTournamentId || 'N/A',
         // Assuming 'dateTime' is a string representing a Unix timestamp in seconds
-        'Date & Time': tournament.dateTime ? new Date(Number(tournament.dateTime) * 1000).toLocaleString() : 'N/A',
+        'Date & Time': tournament.dateTime && tournament.dateTime !== "0"
+            ? new Date(Number(tournament.dateTime) * 1000).toLocaleString()
+            : '-',
         'Type': tournament.type || 'N/A',
         'Entry Fee': tournament.entryFee || 'N/A',
         'Nominal Tournament': tournament.nominalTournament ? 'Yes' : 'No',
