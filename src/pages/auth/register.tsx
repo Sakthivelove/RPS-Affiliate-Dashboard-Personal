@@ -32,7 +32,6 @@ const Register: React.FC = () => {
     const [telegramId, setTelegramId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const { sidebarActive } = useSidebar()
 
     const mutation = useMutation<RegisterResponse, Error, RegisterDto>({
         mutationFn: registerUser,
@@ -46,11 +45,19 @@ const Register: React.FC = () => {
             } else {
                 setErrorMessage(data.message);
                 toast.error(data.message || 'Registration failed. Please try again.');
+                // Clear error message after 5 seconds
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 5000);
             }
         },
         onError: (error: Error) => {
             setErrorMessage(error.message);
             toast.error('Registration failed. Please try again.');
+            // Clear error message after 5 seconds
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
         },
     });
 
@@ -60,6 +67,10 @@ const Register: React.FC = () => {
         if (!telegramId || !password) {
             setErrorMessage('Both fields are required.');
             toast.error('Both fields are required.');
+            // Clear error message after 5 seconds
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
             return;
         }
 
@@ -67,7 +78,7 @@ const Register: React.FC = () => {
     };
 
     return (
-        <div className={`${getContainerClass(sidebarActive)} min-h-screen flex items-center justify-center p-4`}>
+        <div className={`min-h-screen flex items-center justify-center`}>
             <div className="bg-opacity-90 rounded-lg shadow-lg overflow-hidden relative w-full flex flex-col justify-center items-center">
                 <ToastContainer />
                 <img src={logo} alt="Logo" className="mx-auto mb-4 h-24 w-auto" />
