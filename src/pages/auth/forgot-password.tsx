@@ -5,6 +5,9 @@ import Button from "../../components/common/AdminButton";
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { api } from "../../api/api";
+import { ToastContainer, toast } from 'react-toastify'; // Make sure to import toast
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ForgotPassword = () => {
   const [telegramId, setTelegramId] = useState(""); // State for Telegram ID
@@ -20,20 +23,29 @@ const ForgotPassword = () => {
       setSuccess(""); // Clear previous success messages
     },
     onSuccess: (data) => {
-      setSuccess("Password reset instructions have been sent to your Telegram.");
-      setTelegramId(""); // Clear the input after success
-      setTimeout(() => setSuccess(""), 5000); // Clear success message after 5 seconds
-      setTimeout(() => {
-        navigate("/login"); // Redirect to login page after a delay
-      }, 3000);
+      console.log("api data status", data.status);
+
+      if (data.data.status) {
+        setSuccess(data.data.message); // Success message (Password reset email sent)
+        toast.success(data.data.message); // Show toast success message
+        setTelegramId(""); // Clear the input after success
+        setTimeout(() => setSuccess(""), 5000); // Clear success message after 5 seconds
+        setTimeout(() => {
+          navigate("/login"); // Redirect to login page after a delay
+        }, 3000);
+      } else {
+        setError(data.data.message); // Error message (Invalid Telegram ID)
+        toast.error(data.data.message); // Show toast error message
+        setTimeout(() => setError(""), 5000); // Clear error message after 5 seconds
+      }
     },
 
     onError: (err) => {
       setError("Failed to send password reset instructions. Please try again later.");
+      toast.error("Failed to send password reset instructions. Please try again later."); // Show toast error message
       // Automatically clear the error after 5 seconds
       setTimeout(() => setError(""), 5000);
     },
-
   });
 
   // Handle form submission to reset password
@@ -46,15 +58,20 @@ const ForgotPassword = () => {
     // Basic validation
     if (!telegramId) {
       setError("Telegram ID is required.");
+      toast.error("Telegram ID is required."); // Show toast error message
       return;
     }
 
     mutation.mutate(telegramId); // Call the mutation function
   };
 
+  console.log("err", error, "succ", success);
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      <ToastContainer />
       <div className="bg-opacity-90 rounded-lg shadow-lg overflow-hidden relative w-full flex flex-col justify-center items-center">
         {/* Logo Image */}
         <img
@@ -71,10 +88,18 @@ const ForgotPassword = () => {
         </h1>
 
         {/* Display success message */}
-        {success && <div className="text-green-500 mb-4">{success}</div>}
+        {success && (
+          <div className="text-green-500 mb-4">
+            {success} {/* Green color for success messages */}
+          </div>
+        )}
 
         {/* Display error message */}
-        {error && <div className="text-red-500 mb-4">{error}</div>}
+        {error && (
+          <div className="text-red-500 mb-4">
+            {error} {/* Red color for error messages */}
+          </div>
+        )}
 
         {/* Loading indicator */}
         {mutation.isPending && !success && !error && (
@@ -82,7 +107,6 @@ const ForgotPassword = () => {
             <div className="text-green-700">Sending password reset instructions...</div>
           </div>
         )}
-
 
         {/* Form to reset password */}
         <form
@@ -129,6 +153,7 @@ const ForgotPassword = () => {
       </div>
     </div>
   );
+
 };
 
 export default ForgotPassword;
