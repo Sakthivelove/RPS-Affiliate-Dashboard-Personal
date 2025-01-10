@@ -171,10 +171,10 @@ const AffiliateLogin: React.FC = () => {
             </div>
 
             {/* Forgot Password Link */}
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-1">
               <button
                 type="button"
-                className="text-lg text-[#45f882] px-2"
+                className="text-md text-[#45f882] px-2"
                 onClick={() => navigate('/forgot-password')}
               >
                 Forgot Password?
@@ -195,6 +195,21 @@ const AffiliateLogin: React.FC = () => {
                 isDisabled={mutation.isPending}
               />
             </div>
+
+            {/* Registration Prompt */}
+            <div className="mt-4 text-center text-white">
+              <p>
+                Don't have an account?{' '}
+                <button
+                  type="button"
+                  className="text-[#45f882] font-semibold"
+                  onClick={() => navigate('/register')}
+                >
+                  Sign up here.
+                </button>
+              </p>
+            </div>
+
           </form>
         </div>
       </div>
