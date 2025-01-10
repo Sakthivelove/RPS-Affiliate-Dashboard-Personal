@@ -196,21 +196,20 @@ const AffiliateLogin: React.FC = () => {
               />
             </div>
 
-            {/* Registration Prompt */}
-            <div className="mt-4 text-center text-white">
-              <p>
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  className="text-[#45f882] font-semibold"
-                  onClick={() => navigate('/register')}
-                >
-                  Sign up here.
-                </button>
-              </p>
-            </div>
-
           </form>
+        </div>
+        {/* Registration Prompt */}
+        <div className="mt-4 text-center text-white">
+          <p>
+            Don't have an account?{' '}
+            <button
+              type="button"
+              className="text-[#45f882] font-semibold"
+              onClick={() => navigate('/register')}
+            >
+              Sign up here.
+            </button>
+          </p>
         </div>
       </div>
     </div>
