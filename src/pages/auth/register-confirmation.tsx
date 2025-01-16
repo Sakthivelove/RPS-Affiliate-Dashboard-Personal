@@ -32,7 +32,7 @@ const RegisterConfirmation: React.FC = () => {
                 toast.success('Confirmation successful!');
                 // Redirect to next page or dashboard
                 setTimeout(() => {
-                    window.location.href = '/'; // Redirect to next page after confirmation
+                    window.location.href = '/login'; // Redirect to next page after confirmation
                 }, 2000);
             } else {
                 setErrorMessage(data.message);
