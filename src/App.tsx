@@ -18,6 +18,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Register from "./pages/auth/register";
 import RegisterConfirmation from "./pages/auth/register-confirmation";
 import RegisterOtpResend from "./pages/auth/resend-otp";
+import CreateVIPTournament from "./pages/tournaments/create-new-vip-tournament";
 
 
 const App: React.FC = () => {
@@ -46,6 +47,7 @@ const App: React.FC = () => {
                 {/* Protected Routes */}
                 {/* <Route element={<ProtectedRoute />}> */}
                 <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
+                <Route path="/create-new-vip-tournament" element={<CreateVIPTournament />} />
                 <Route path="/tournament-list" element={<TournamentTable />} />
                 <Route path="/activities" element={<Activities />} />
                 {/* </Route> */}

@@ -8,7 +8,7 @@ import Modal from "../../components/common/Modal"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const CreateRockTournament: React.FC = () => {
+const CreateVIPTournament: React.FC = () => {
   const { mutateAsync, isPending, isError, error } = useCreateTournament();
   const { sidebarActive } = useSidebar();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,21 +46,21 @@ const CreateRockTournament: React.FC = () => {
   return (
     <div className={containerClass}>
       <CreateTournamentForm
-        title="Create New Rock Tournament"
-        tournamentPlaceholder="Enter Rock Tournament Name"
+        title="Create New VIP Tournament"
+        tournamentPlaceholder="Enter VIP Tournament Name"
         buttonLabel={isPending ? "Creating tournament..." : "Create Tournament"}
         onSubmit={handleCreateRockTournament}
         onSuccess={() => console.log("Tournament successfully created!")} // Optional success callback
         isDisabled={isPending} // Disable the form while submitting
         errorMessage={isError ? "Unable to create the tournament." : undefined} // Display error message if any
-        tournamentType={'rock'}
+        tournamentType={"vip"} // Pass type to the child
       />
 
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}
           title="Tournament Created"
-          content="The Rock Tournament has been created successfully!"
+          content="The VIP Tournament has been created successfully!"
           onClose={handleCloseModal} // Navigate only after modal close
           type="success"
         />
@@ -79,4 +79,4 @@ const CreateRockTournament: React.FC = () => {
   );
 };
 
-export default CreateRockTournament;
+export default CreateVIPTournament;

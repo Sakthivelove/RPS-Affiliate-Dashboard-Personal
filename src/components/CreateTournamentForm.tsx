@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateTournamentInput from "./CreateTournamentInput";
 import AdminButton from "./common/AdminButton";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUploadImage } from "../hooks/useUploadImage";
+import ImagePreview from "./imageupload";
 
 interface CreateTournamentFormProps {
   title: string;
@@ -12,6 +14,7 @@ interface CreateTournamentFormProps {
   onSuccess: () => void;
   isDisabled?: boolean;
   errorMessage?: string;
+  tournamentType: string;
 }
 
 export interface TournamentData {
@@ -30,20 +33,20 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
   buttonLabel,
   onSubmit,
   onSuccess,
+  tournamentType
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<{ message: string } | null>(null);
-
   const [tournamentName, setTournamentName] = useState<string>("");
   const [dateTime, setDateTime] = useState<Date | string>(new Date()); // Ensure it's a Date object
-  const [type, setType] = useState<string>("rock");
+  const [type, setType] = useState<string>(tournamentType);
   const [entryFee, setEntryFee] = useState<number>(5);
   const [nominalTournament, setNominalTournament] = useState<boolean>(true);
   const [nominalFee, setNominalFee] = useState<number>(5);
-  const [bannerImage, setBannerImage] = useState<string>("");
-
+  const [bannerImage, setBannerImage] = useState<string | null>(null);
+  const [imageUploaded, setImageUploaded] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<any>({});
+  const [file, setFile] = useState<File | null>(null);  // State to manage the selected file
 
   const handleTournamentName = (value: string) => setTournamentName(value);
 
@@ -64,28 +67,16 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
     setDateTime(selectedDate);
   };
 
-  const handleType = (value: string) => setType(value);
   const handleEntryFee = (value: string) => setEntryFee(Math.max(0, Number(value)));
   const handleNominalTournament = (value: string) => setNominalTournament(value === "true");
   const handleNominalFee = (value: string) => setNominalFee(Number(value));
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.size <= 1 * 1024 * 1024) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBannerImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      toast.error("File size exceeds the 1MB limit."); // This shows the toast error message
-    }
-  };
+  const { uploadImage, mutation } = useUploadImage(setBannerImage);  // Use the custom hook
 
   const handleReset = () => {
     setTournamentName("");
     setDateTime(new Date());
-    setType("rock");
+    setType(tournamentType);
     setEntryFee(0);
     setNominalTournament(true);
     setNominalFee(0);
@@ -111,31 +102,101 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
       errors.nominalFee = "Nominal Fee must be a positive value.";
     }
 
+    // Check if banner image is selected
+    if (!file) {
+      errors.bannerImage = "Banner image is required.";
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0; // If no errors, return true
   };
 
-  const handleCreateTournament = async () => {
-    if (!validateForm()) return; // Only proceed if form is valid
+  const handleFileChange = (validatedFile: File | null) => {
+    setFile(validatedFile);  // Update the file state with the validated file
+  };
 
-    const tournamentData: TournamentData = {
-      tournamentName,
-      dateTime: Math.floor(new Date(dateTime).getTime() / 1000), // Convert to UNIX timestamp
-      type,
-      entryFee,
-      nominalTournament,
-      nominalFee,
-      bannerImage,
+  const handleRemoveImage = () => {
+    setFile(null);  // Clear the selected file
+  };
+
+  // Handle the image upload API trigger
+  const handleImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('Banner', file);
+
+    try {
+      // Call the uploadImage function, which triggers mutation's onSuccess callback
+      await uploadImage(formData);  // This will trigger the onSuccess callback from the mutation hook
+      setImageUploaded(true);  // Flag that the image upload was successful
+      console.log("Image uploaded successfully");
+      return true; // Image uploaded successfully
+    } catch (err) {
+      toast.error('Error uploading image');
+      setImageUploaded(false);  // Flag that image upload failed
+      console.log("Image upload failed");
+      return false; // Image upload failed
+    }
+  };
+
+  // UseEffect to detect when image is uploaded and set
+  useEffect(() => {
+    const submitTournament = async () => {
+      try {
+        console.log("Preparing to submit tournament with bannerImage:", bannerImage);
+        if (!bannerImage) {
+          throw new Error("Banner image is required but is null.");
+        }
+
+        const tournamentData: TournamentData = {
+          tournamentName,
+          dateTime: Math.floor(new Date(dateTime).getTime() / 1000), // Convert to UNIX timestamp
+          type,
+          entryFee,
+          nominalTournament,
+          nominalFee,
+          bannerImage, // Use the updated bannerImage
+        };
+
+        await onSubmit(tournamentData);
+        console.log("Tournament created successfully.");
+        onSuccess(); // Call success handler
+      } catch (error: any) {
+        console.error("Error while creating tournament:", error);
+        toast.error(
+          error.message || "An error occurred while creating the tournament."
+        );
+      }
     };
+
+    // Trigger submission only if conditions are met
+    if (imageUploaded && bannerImage) {
+      submitTournament(); // Call async function
+    } else if (imageUploaded && !bannerImage) {
+      console.error("Image upload succeeded, but the banner image URL is not available.");
+      toast.error("Image uploaded successfully, but the banner image URL is missing. Please try again.");
+    }
+  }, [imageUploaded, bannerImage]); // Dependency on imageUploaded and bannerImag
+
+  const handleCreateTournament = async () => {
+    console.log("Create Tournament button clicked");
+
+    if (!validateForm()) return; // Only proceed if form is valid
+    if (!file) {
+      toast.error("Please select a file to upload.");
+      return; // Ensure file is selected
+    }
+    console.log("All validations passed");
 
     setIsLoading(true);
     setError(null);
 
     try {
-      await onSubmit(tournamentData);
-      onSuccess();
+      await handleImageUpload(file); // Await image upload
     } catch (err: any) {
-      setError({ message: err.message || "An error occurred while creating the tournament" });
+      console.error("Error occurred:", err);
+      setError({
+        message: err.message || "An error occurred while creating the tournament",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -145,45 +206,17 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
     <div className="m-4">
       <ToastContainer />
       <section>
-        <h1 className="capitalize text-[#45F882] text-[2rem] md:text-[3rem] rajdhani-bold">
+        <h1 className="capitalize text-[#45F882] text-[2rem] md:text-[2.5rem] rajdhani-bold">
           {title}
         </h1>
       </section>
+      <ImagePreview
+        file={file}
+        onRemove={handleRemoveImage}
+        onFileChange={handleFileChange}
+      />
 
-      <section className="mt-[0.5rem]">
-        <div className="w-full h-[15rem] lg:h-[20rem] bg-gradient-to-r from-[#45F882] to-[#FFBE18] rounded-[1.5rem] p-[0.1rem]">
-          <div className="bg-[#0B0D13] rounded-[1.5rem] w-full h-full flex justify-center items-center">
-            {bannerImage ? (
-              <div className="w-full h-full flex justify-center items-center rounded-[1.5rem]">
-                <img
-                  src={bannerImage}
-                  alt="Banner Preview"
-                  className="max-w-full max-h-full object-contain rounded-[1.5rem] shadow-lg"
-                />
-              </div>
-            ) : (
-              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-full rounded-[1.5rem] cursor-pointer bg-[#1A1D26]">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <img
-                    src="/create-tournament/file_upload.png"
-                    alt="Upload"
-                    className="h-[5rem] w-[5rem] lg:h-[10rem] lg:w-[10rem]" />
-                  <p className="text-center text-white rajdhani-bold text-[1rem] md:text-[1.875rem]">
-                    100*100 <span className="text-[#45F882]">Below 1 MB</span>
-                  </p>
-                </div>
-                <input
-                  id="dropzone-file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            )}
-          </div>
-        </div>
-      </section>
-
+      {formErrors.bannerImage && <p className="text-red-500">{formErrors.bannerImage}</p>}
       {error && <div className="text-red-500 mt-2">{error.message}</div>}
       {isLoading && <div className="text-green-500 mt-2">Creating tournament...</div>}
 
@@ -265,6 +298,7 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
                 width="sm:w-32 lg:w-48"
                 height="sm:h-12 lg:h-16"
                 onClick={handleReset}
+                fontWeight="font-[700]"
               />
               <AdminButton
                 image={"green"}
@@ -272,6 +306,7 @@ const CreateTournamentForm: React.FC<CreateTournamentFormProps> = ({
                 width="sm:w-32 lg:w-48"
                 height="sm:h-12 lg:h-16"
                 onClick={handleCreateTournament}
+                fontWeight="font-[700]"
               />
             </div>
           </form>
