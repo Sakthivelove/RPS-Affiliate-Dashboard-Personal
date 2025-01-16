@@ -17,6 +17,8 @@ interface RegisterDto {
 interface RegisterResponse {
     status: boolean;
     message: string;
+    response: string;  // JWT token (add this field for handling the response)
+    telegramId: string;
 }
 
 const registerUser = async (data: RegisterDto): Promise<RegisterResponse> => {
@@ -38,6 +40,9 @@ const Register: React.FC = () => {
         onSuccess: (data) => {
             if (data.status) {
                 toast.success('Registration successful!');
+                // Store the JWT token if needed
+                localStorage.setItem('jwtToken', data.response);
+
                 // Navigate to confirmation page
                 setTimeout(() => {
                     window.location.href = '/register-confirmation';
