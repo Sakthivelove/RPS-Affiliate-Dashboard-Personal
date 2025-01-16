@@ -3,45 +3,55 @@ import useTournaments from '../hooks/useTournaments';
 import Table from '../components/common/Table';
 import { useSidebar } from '../context/SidebarContext';
 import { getContainerClass, truncateAddress } from '../utils';
-import StatusMessage from '../components/StatusMessage';
 
 const TournamentTable: React.FC = () => {
     const { data, error, isLoading, isError } = useTournaments();
+    console.log("tournament data", data);
+
+    const [page, setPage] = useState(1);  // Track the current page
     const [searchQuery, setSearchQuery] = useState('');
     const { sidebarActive } = useSidebar();
+
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
 
     // Define columns with all fields from the Tournament interface
     const columns = [
-        'Tournament ID',
-        'Banner Image',
+        'S.No',
+        // 'Tournament ID',\
         'Tournament Name',
-        'Primary Tournament ID',
-        'Date & Time',
+        'Banner Image',
+        // 'Primary Tournament ID',
         'Type',
         'Entry Fee',
         'Nominal Tournament',
         'Nominal Fee',
         'Prize Pool',
         'Winner',
-        'Current Stage',
         'Status',
         'Payment Window',
         'No. of Players',
-        'Payment Start',
-        'Payment End',
+        'Date & Time'
     ];
+
 
     // Map data to include all fields in the table with fallbacks
     const tableData = data?.map((tournament, index) => ({
-        'Tournament ID': tournament.tournamentId || 'N/A',
-        'Banner Image': tournament.bannerImage || 'N/A',
+        'S.No': index + 1,
+        // 'Tournament ID': tournament.tournamentId || 'N/A',
+        'Banner Image': tournament.bannerImage ? (
+            <img src={`${tournament.bannerImage}`} alt="Tournament Banner" className="w-20 h-20 object-cover" />
+        ) : '-',
+
         'Tournament Name': tournament.tournamentName || 'Unknown',
-        'Primary Tournament ID': tournament.primaryTournamentId || 'N/A',
+        // 'Primary Tournament ID': tournament.primaryTournamentId || 'N/A',
         // Assuming 'dateTime' is a string representing a Unix timestamp in seconds
         'Date & Time': tournament.dateTime && tournament.dateTime !== "0"
             ? new Date(Number(tournament.dateTime) * 1000).toLocaleString()
             : '-',
+
         'Type': tournament.type || 'N/A',
         'Entry Fee': tournament.entryFee || 'N/A',
         'Nominal Tournament': tournament.nominalTournament ? 'Yes' : 'No',
@@ -68,18 +78,34 @@ const TournamentTable: React.FC = () => {
         setSearchQuery(searchTerm); // Update search query state
     };
 
+    // Get current page data for pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Handle page change
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= Math.ceil((filteredData?.length || 0) / itemsPerPage)) {
+            setCurrentPage(newPage);
+        }
+    };
+
     return (
-        <div className={`${getContainerClass(sidebarActive)}`}>
-            <div className="m-4 overflow-auto h-[95vh]">
+        <div className={`${getContainerClass(sidebarActive)} flex flex-col`}>
+            <div className="relative z-10 overflow-auto h-full p-[2%]">
                 <Table
                     columns={columns}
-                    data={filteredData}
+                    data={filteredData?.map((row, index) => ({
+                        ...row,
+                        'S.No': index + 1 + (currentPage - 1) * itemsPerPage, // Adjust S.No based on the current page
+                    }))}
                     title="Tournament List"
                     rowColor="bg-[#0F1C23]"
                     tableBgColor="bg-[#1A1D26]"
                     headerTextColor="text-[#45F882]"
                     showSearchBar={true}
                     onSearch={handleSearch}
+                    height='60vh'
                     isLoading={isLoading}
                     error={isError}
                     loadingMessage="Loading tournament data..."
