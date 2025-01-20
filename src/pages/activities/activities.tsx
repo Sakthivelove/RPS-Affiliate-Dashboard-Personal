@@ -54,15 +54,23 @@ const Activities: React.FC = () => {
         }
     }, [activities?.totalCount, limit]);
 
-    const columns = ['S.No', 'Telegram ID', 'Action', 'IP Address', 'Status', 'Device Info', 'Reason', 'Created At'];
+    const columns = [
+        'S.No',
+        'Telegram ID',
+        'Action',
+        //  'IP Address', 
+        'Status',
+        //  'Device Info', 
+        'Reason',
+        'Created At'];
 
     const data = activities?.activities.map((activity, index) => ({
         'S.No': index + 1,
         'Telegram ID': activity.telegramId,
         Action: activity.action,
-        'IP Address': activity.ip,
+        // 'IP Address': activity.ip,
         Status: activity.status,
-        'Device Info': activity.device,
+        // 'Device Info': activity.device,
         Reason: activity.reason || 'N/A',
         'Created At': new Date(activity.createdAt).toLocaleString(),
     }));
