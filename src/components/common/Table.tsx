@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from '../SearchBar';
+import Pagination from '@mui/material/Pagination';
 
 interface TableProps {
   columns: string[]; // Column names
@@ -162,7 +163,7 @@ const Table: React.FC<TableProps> = ({
         )}
       </div>
 
-      <div className="text-sm flex justify-center items-center p-4">
+      {/* <div className="text-sm flex justify-center items-center p-4">
         {page > 1 && (
           <>
             <button
@@ -208,6 +209,37 @@ const Table: React.FC<TableProps> = ({
               Last
             </button>
           </>
+        )}
+      </div> */}
+
+            {/* MUI Pagination */}
+            <div className="flex justify-center items-center p-4">
+        {totalPages > 1 && (
+          <Pagination
+            count={totalPages} // Total number of pages
+            page={page} // Current page
+            onChange={(_, newPage) => handlePageChange(newPage)} // Handle page changes
+            size="medium" // Adjust size (small, medium, large)
+            shape="rounded" // Ensures rounded shape
+            disabled={isLoading} // Disable during loading state
+            sx={{
+              '& .MuiPaginationItem-root': {
+                backgroundColor: '#1A1D26 !important',
+                color: '#FFF !important', // Ensure the styles are applied
+                borderColor: '#1A1D26',
+                borderRadius: '16px',
+              },
+              '& .Mui-selected': {
+                backgroundColor: '#45F882 !important', // Bright green for selection
+                color: '#FFF !important', // White text
+                borderRadius: '16px',
+                borderColor: '#45F882',
+              },
+              '& .MuiPaginationItem-root:hover': {
+                backgroundColor: 'rgba(69, 248, 130, 0.2) !important',
+              },
+            }}
+          />
         )}
       </div>
     </div>

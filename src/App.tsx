@@ -19,6 +19,7 @@ import Register from "./pages/auth/register";
 import RegisterConfirmation from "./pages/auth/register-confirmation";
 import RegisterOtpResend from "./pages/auth/resend-otp";
 import CreateVIPTournament from "./pages/tournaments/create-new-vip-tournament";
+import NotFound from "./pages/not-found";
 
 
 const App: React.FC = () => {
@@ -49,7 +50,10 @@ const App: React.FC = () => {
                 <Route path="/create-new-rock-tournament" element={<CreateNewRockTournament />} />
                 <Route path="/create-new-vip-tournament" element={<CreateVIPTournament />} />
                 <Route path="/tournament-list" element={<TournamentTable />} />
-                <Route path="/activities" element={<Activities />} />
+                {/* <Route path="/activities" element={<Activities />} /> */}
+                {/* Catch-all route for non-existing paths */}
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" />} /> {/* Redirect invalid paths to 404 page */}
                 {/* </Route> */}
               </Routes>
             </Layout>
