@@ -111,7 +111,7 @@ const ForgotPassword = () => {
         {/* Form to reset password */}
         <form
           onSubmit={handleSubmit} // Form submit handler
-          className="relative z-10 p-[0.07rem] rounded-lg w-[50%]"
+          className="relative z-10 p-[0.07rem] rounded-lg w-[30%]"
           style={{
             background: "linear-gradient(90deg, #45F882 0%, #FFBE18 100%)", // Gradient for border
           }}

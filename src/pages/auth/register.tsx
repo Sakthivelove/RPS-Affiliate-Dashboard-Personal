@@ -90,7 +90,7 @@ const Register: React.FC = () => {
                 <h1 className="text-4xl font-bold text-center text-white mb-8" style={{ color: 'rgba(69, 248, 130, 1)' }}>
                     Register
                 </h1>
-                <form className="p-8 rounded-lg bg-gray-800 md:w-[50%]" onSubmit={handleRegisterSubmit}>
+                <form className="p-8 rounded-lg bg-gray-800 md:w-[30%]" onSubmit={handleRegisterSubmit}>
                     <div className="flex flex-col gap-3">
                         <div className="relative">
                             <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500" />

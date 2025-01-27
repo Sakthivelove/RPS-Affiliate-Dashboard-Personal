@@ -116,7 +116,7 @@ const AffiliateLogin: React.FC = () => {
         </h1>
 
         <div
-          className="p-[0.07rem] rounded-lg md:w-[50%]"
+          className="p-[0.07rem] rounded-lg md:w-[30%]"
           style={{ background: 'linear-gradient(90deg, #45F882 0%, #FFBE18 100%)' }}
         >
           <form className="p-8 rounded-lg" style={{ backgroundColor: 'rgba(26, 29, 38, 1)' }} onSubmit={handleLoginSubmit}>
